@@ -37,9 +37,7 @@
   --blue: #007194;
   --orange: #f67613;
   --green: #12a657;
-  --purple: #711471;
   --map-yes: var(--yellow);
-  --map-yes-or: var(--purple);
   --map-na: #cfcdc7;
 }
 

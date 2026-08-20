@@ -202,7 +202,6 @@
   const rootStyle = getComputedStyle(document.documentElement);
   const cssVar = name => rootStyle.getPropertyValue(name).trim();
   const yesColor = cssVar("--map-yes");
-  const yesOrColor = cssVar("--map-yes-or");
   const naColor = cssVar("--map-na");
 
   function isYes(value) {
@@ -216,8 +215,7 @@
     return matchMode === "and" ? flags.every(Boolean) : flags.some(Boolean);
   }
   function fillFor(abbr) {
-    if (!stateMatches(abbr)) return naColor;
-    return matchMode === "or" ? yesOrColor : yesColor;
+    return stateMatches(abbr) ? yesColor : naColor;
   }
 
   const projection = d3.geoAlbersUsa().fitSize([WIDTH, HEIGHT], fc);
@@ -267,10 +265,10 @@
     const lines = checkedCategories.map(cat => {
       const raw = row ? row.values[cat.column] : "";
       const text = isYes(raw) ? raw : CONFIG.legendNaLabel;
-      return `${cat.label}: ${text}`;
+      return `<strong>${cat.label}:</strong> ${text}`;
     });
     const body = lines.length ? lines.join("<br>") : "No category selected";
-    return `<strong>${d.name}</strong><br><span class="sub">${body}</span>`;
+    return `<strong>${d.name}</strong><br><br><span class="sub">${body}</span>`;
   }
 
   const paths = gStates.selectAll("path.state")
