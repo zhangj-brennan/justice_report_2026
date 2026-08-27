@@ -34,7 +34,7 @@
     </div>
     <p class="filter-summary" id="filterSummary"></p>
     <div class="map-wrap">
-      <svg id="chart" viewBox="0 0 1120 850" role="img" aria-label="Map of US states morphing between true geography and an equal-area tile grid"></svg>
+      <svg id="chart" viewBox="0 0 1120 830" role="img" aria-label="Map of US states morphing between true geography and an equal-area tile grid"></svg>
       <div id="status" class="status">Loading state boundaries…</div>
     </div>
     <div class="controls">
@@ -71,7 +71,7 @@
     // Data — CSV must have one row per state (a name column plus one column
     // per category below).
     dataCsvPath: "formatted.csv",
-    dataColumns: { name: "Jurisdiction" },
+    dataColumns: { name: "Jurisdiction", sources: "Sources" },
 
     // One button per selectable slice of data. `column` must match a CSV
     // header exactly. A cell equal to "NA" (case-insensitive) colors that
@@ -104,7 +104,7 @@
   root.setProperty("--map-yes", CONFIG.colors.yes);
   root.setProperty("--map-na", CONFIG.colors.na);
 
-  const WIDTH = 960, HEIGHT = 850, CANVAS_W = 1120;
+  const WIDTH = 960, HEIGHT = 830, CANVAS_W = 1120;
   const svg = d3.select("#chart");
   const statusEl = document.getElementById("status");
   const tooltip = d3.select("#tooltip");
@@ -170,6 +170,7 @@
       d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json"),
       d3.csv(CONFIG.dataCsvPath, row => ({
         name: row[CONFIG.dataColumns.name],
+        sources: (row[CONFIG.dataColumns.sources] || "").trim(),
         values: Object.fromEntries(CONFIG.categories.map(c => [c.column, (row[c.column] || "").trim()]))
       }))
     ]);
@@ -262,13 +263,12 @@
 
   function tooltipHtml(d) {
     const row = DATA[d.abbr];
-    const lines = checkedCategories.map(cat => {
+    const lines = CONFIG.categories.map(cat => {
       const raw = row ? row.values[cat.column] : "";
       const text = isYes(raw) ? raw : CONFIG.legendNaLabel;
       return `<strong>${cat.label}:</strong> ${text}`;
     });
-    const body = lines.length ? lines.join("<br>") : "No category selected";
-    return `<strong>${d.name}</strong><br><br><span class="sub">${body}</span>`;
+    return `<strong>${d.name}</strong><br><br><span class="sub">${lines.join("<br>")}</span>`;
   }
 
   const paths = gStates.selectAll("path.state")
