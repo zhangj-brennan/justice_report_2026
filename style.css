@@ -234,6 +234,21 @@ g.state-label text.carto-abbr {
   font-size: 10px;
 }
 
+.leader-group {
+  pointer-events: none;
+}
+.leader-line {
+  stroke: black;
+  stroke-width: 1;
+}
+g.leader-label text.leader-text {
+  text-anchor: start;
+  dominant-baseline: central;
+  font-family: "Benton";
+  font-size: 10px;
+  fill: black;
+}
+
 .tooltip {
   position: fixed;
   pointer-events: none;
